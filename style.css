@@ -1,4 +1,4 @@
- {
+{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -9,6 +9,7 @@ body {
   background: #0b0d12;
   color: white;
   min-height: 100vh;
+  /* IMPORTANT: don't hard lock scrolling on mobile */
   overflow: hidden;
 }
 
@@ -19,15 +20,17 @@ body {
 }
 
 .topbar {
-  padding: 18px 22px;
+  padding: 16px 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
 }
 
 .topbar h1 {
-  font-size: 20px;
+  font-size: 18px;
   opacity: 0.9;
+  white-space: nowrap;
 }
 
 .controls {
@@ -55,6 +58,7 @@ body {
   position: relative;
 }
 
+/* slides */
 .slide {
   position: absolute;
   inset: 0;
@@ -64,6 +68,10 @@ body {
   pointer-events: none;
   transform: scale(0.98);
   transition: opacity 0.45s ease, transform 0.45s ease;
+
+  /* IMPORTANT for mobile */
+  padding: 14px;
+  overflow: hidden;
 }
 
 .slide.active {
@@ -72,17 +80,31 @@ body {
   transform: scale(1);
 }
 
+/* card */
 .card {
-  width: min(1000px, 92vw);
+  width: min(1000px, 100%);
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 22px;
-  padding: 26px;
+  padding: 22px;
   display: grid;
   grid-template-columns: 130px 1fr;
-  gap: 24px;
+  gap: 20px;
   box-shadow: 0 20px 80px rgba(0,0,0,0.45);
-  overflow: hidden;
+
+  /* THIS is the real fix */
+  max-height: calc(100vh - 95px);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* nice scrollbar (desktop only) */
+.card::-webkit-scrollbar {
+  width: 10px;
+}
+.card::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.15);
+  border-radius: 10px;
 }
 
 /* PFP */
@@ -92,6 +114,7 @@ body {
   border-radius: 24px;
   overflow: hidden;
   border: 1px solid rgba(255,255,255,0.12);
+  flex-shrink: 0;
 }
 
 .pfp {
@@ -104,12 +127,13 @@ body {
 .name {
   font-size: 34px;
   margin-bottom: 14px;
+  word-break: break-word;
 }
 
 .info {
   display: grid;
   grid-template-columns: 320px 1fr;
-  gap: 20px;
+  gap: 18px;
   align-items: center;
 }
 
@@ -125,6 +149,7 @@ body {
   font-size: 17px;
   line-height: 1.55;
   opacity: 0.85;
+  word-break: break-word;
 }
 
 /* Base hidden state */
@@ -136,215 +161,145 @@ body {
 }
 
 /* -----------------------------
-   1) DROP
+   Animations
 -------------------------------- */
 .slide.active[data-animation="drop"] .pfp-wrap {
   animation: dropPfp 0.7s cubic-bezier(.2,.9,.2,1) forwards;
 }
-
 .slide.active[data-animation="drop"] .name {
   animation: fadeUp 0.6s ease forwards;
   animation-delay: 0.15s;
 }
-
 .slide.active[data-animation="drop"] .big {
   animation: fadeUp 0.7s ease forwards;
   animation-delay: 0.25s;
 }
-
 .slide.active[data-animation="drop"] .bio {
   animation: fadeUp 0.7s ease forwards;
   animation-delay: 0.35s;
 }
 
-/* -----------------------------
-   2) SLIDE LEFT
--------------------------------- */
 .slide.active[data-animation="slide-left"] .pfp-wrap {
   animation: slideInLeft 0.65s ease forwards;
 }
-
 .slide.active[data-animation="slide-left"] .name {
   animation: slideInLeft 0.7s ease forwards;
   animation-delay: 0.1s;
 }
-
 .slide.active[data-animation="slide-left"] .big {
   animation: slideInLeft 0.75s ease forwards;
   animation-delay: 0.2s;
 }
-
 .slide.active[data-animation="slide-left"] .bio {
   animation: slideInLeft 0.75s ease forwards;
   animation-delay: 0.3s;
 }
 
-/* -----------------------------
-   3) ZOOM
--------------------------------- */
 .slide.active[data-animation="zoom"] .pfp-wrap {
   animation: pop 0.55s ease forwards;
 }
-
 .slide.active[data-animation="zoom"] .name {
   animation: pop 0.6s ease forwards;
   animation-delay: 0.12s;
 }
-
 .slide.active[data-animation="zoom"] .big {
   animation: pop 0.65s ease forwards;
   animation-delay: 0.22s;
 }
-
 .slide.active[data-animation="zoom"] .bio {
   animation: fadeUp 0.7s ease forwards;
   animation-delay: 0.32s;
 }
 
-/* -----------------------------
-   4) FLIP
--------------------------------- */
 .slide.active[data-animation="flip"] .pfp-wrap {
   animation: flipIn 0.7s ease forwards;
 }
-
 .slide.active[data-animation="flip"] .name {
   animation: fadeUp 0.7s ease forwards;
   animation-delay: 0.2s;
 }
-
 .slide.active[data-animation="flip"] .big {
   animation: flipIn 0.85s ease forwards;
   animation-delay: 0.25s;
 }
-
 .slide.active[data-animation="flip"] .bio {
   animation: fadeUp 0.7s ease forwards;
   animation-delay: 0.35s;
 }
 
-/* -----------------------------
-   5) SWIPE UP
--------------------------------- */
 .slide.active[data-animation="swipe-up"] .pfp-wrap {
   animation: swipeUp 0.6s ease forwards;
 }
-
 .slide.active[data-animation="swipe-up"] .name {
   animation: swipeUp 0.7s ease forwards;
   animation-delay: 0.12s;
 }
-
 .slide.active[data-animation="swipe-up"] .big {
   animation: swipeUp 0.75s ease forwards;
   animation-delay: 0.22s;
 }
-
 .slide.active[data-animation="swipe-up"] .bio {
   animation: swipeUp 0.75s ease forwards;
   animation-delay: 0.32s;
 }
 
-/* -----------------------------
-   6) GLITCH
--------------------------------- */
 .slide.active[data-animation="glitch"] .pfp-wrap {
   animation: glitchIn 0.7s steps(2) forwards;
 }
-
 .slide.active[data-animation="glitch"] .name {
   animation: glitchIn 0.75s steps(2) forwards;
   animation-delay: 0.12s;
 }
-
 .slide.active[data-animation="glitch"] .big {
   animation: glitchIn 0.85s steps(2) forwards;
   animation-delay: 0.2s;
 }
-
 .slide.active[data-animation="glitch"] .bio {
   animation: fadeUp 0.7s ease forwards;
   animation-delay: 0.35s;
 }
 
-/* -----------------------------
-   7) SPIN
--------------------------------- */
 .slide.active[data-animation="spin"] .pfp-wrap {
   animation: spinIn 0.7s ease forwards;
 }
-
 .slide.active[data-animation="spin"] .name {
   animation: fadeUp 0.7s ease forwards;
   animation-delay: 0.2s;
 }
-
 .slide.active[data-animation="spin"] .big {
   animation: spinIn 0.85s ease forwards;
   animation-delay: 0.25s;
 }
-
 .slide.active[data-animation="spin"] .bio {
   animation: fadeUp 0.7s ease forwards;
   animation-delay: 0.35s;
 }
 
-/* -----------------------------
-   1) DROP
--------------------------------- */
-.slide.active[data-animation="drop"] .pfp-wrap {
-  animation: dropPfp 0.7s cubic-bezier(.2,.9,.2,1) forwards;
-}
-
-.slide.active[data-animation="drop"] .name {
-  animation: fadeUp 0.6s ease forwards;
-  animation-delay: 0.15s;
-}
-
-.slide.active[data-animation="drop"] .big {
-  animation: fadeUp 0.7s ease forwards;
-  animation-delay: 0.25s;
-}
-
-.slide.active[data-animation="drop"] .bio {
-  animation: fadeUp 0.7s ease forwards;
-  animation-delay: 0.35s;
-}
-
-
-/* -----------------------------
-   Keyframes
--------------------------------- */
+/* Keyframes */
 @keyframes dropPfp {
   from { transform: translateY(-120px); opacity: 0; }
   to   { transform: translateY(0); opacity: 1; }
 }
-
 @keyframes fadeUp {
   from { transform: translateY(20px); opacity: 0; }
   to   { transform: translateY(0); opacity: 1; }
 }
-
 @keyframes slideInLeft {
   from { transform: translateX(-55px); opacity: 0; }
   to   { transform: translateX(0); opacity: 1; }
 }
-
 @keyframes pop {
   from { transform: scale(0.85); opacity: 0; }
   to   { transform: scale(1); opacity: 1; }
 }
-
 @keyframes flipIn {
   from { transform: rotateY(90deg); opacity: 0; }
   to   { transform: rotateY(0deg); opacity: 1; }
 }
-
 @keyframes swipeUp {
   from { transform: translateY(60px); opacity: 0; }
   to   { transform: translateY(0); opacity: 1; }
 }
-
 @keyframes glitchIn {
   0%   { transform: translateX(-10px); opacity: 0; }
   25%  { transform: translateX(10px); opacity: 1; }
@@ -352,25 +307,45 @@ body {
   75%  { transform: translateX(6px); opacity: 1; }
   100% { transform: translateX(0); opacity: 1; }
 }
-
 @keyframes spinIn {
   from { transform: rotate(160deg) scale(0.4); opacity: 0; }
   to   { transform: rotate(0deg) scale(1); opacity: 1; }
 }
-@keyframes dropPfp {
-  from { transform: translateY(-120px); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
-}
 
-
-/* Responsive */
+/* -----------------------------
+   MOBILE FIXES
+-------------------------------- */
 @media (max-width: 850px) {
+  body {
+    overflow: hidden;
+  }
+
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
   .card {
     grid-template-columns: 1fr;
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .name {
+    font-size: 26px;
   }
 
   .info {
     grid-template-columns: 1fr;
+  }
+
+  .bio {
+    font-size: 15px;
   }
 
   .pfp-wrap {
